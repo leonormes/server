@@ -25,6 +25,7 @@
     "express-firebase-middleware": "^1.0.0"
   },
   "devDependencies": {
+    "eslint-plugin-import": "^2.8.0",
     "nodemon": "^1.12.1"
   }
 }
