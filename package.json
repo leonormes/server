@@ -1,0 +1,30 @@
+{
+  "name": "seaview-register",
+  "version": "0.0.1",
+  "description": "Database of Seaview members",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leonormes/gawk5.git"
+  },
+  "keywords": [
+    "express",
+    "firebase",
+    "backend"
+  ],
+  "author": "Leon Ormes",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.0",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.0",
+    "firebase-admin": "^4.1.2",
+    "express-firebase-middleware": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
+}
