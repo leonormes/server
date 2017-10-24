@@ -20,6 +20,7 @@ router.use('/public', express.static('public'));
 router.get('/', (req, res) => {
     fs.createReadStream(__dirname + '/public/index.html').pipe(res);
 });
+
 router.get('/app.js', (req, res) => {
     fs.createReadStream(__dirname + '/public/app.js').pipe(res);
 });
