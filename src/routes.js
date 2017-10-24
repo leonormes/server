@@ -16,21 +16,21 @@ router.get('/', (req, res) => {
     fs.createReadStream(__dirname + '/public/index.html').pipe(res);
 });
 router.get('/app.js', (req, res) => {
-    fs.createReadStream(__dirname + '/public/app.js').pipe(res)
+    fs.createReadStream(__dirname + '/public/app.js').pipe(res);
 });
 
 router.get('/activePupils', (req, res) => {
     ref.orderByChild('status').equalTo('Active')
-        .once('value', function (snapshot) {
+        .once('value', function(snapshot) {
             res.json(snapshot.val());
-        })
+        });
 });
 
 router.get('/allPupils', (req, res) => {
     ref.once('value')
     .then((dataSnapshot) => {
-        res.json(dataSnapshot.val())
-    })
-})
+        res.json(dataSnapshot.val());
+    });
+});
 
 module.exports = router;
