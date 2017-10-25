@@ -57,7 +57,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/public/";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 123);
@@ -16311,86 +16311,100 @@ return zhTw;
 /* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const pupilTemplate = __webpack_require__(124)
-const editModal = __webpack_require__(141)
-const moment = __webpack_require__(0);
-let pupilRecordsArray;
-let activePupils;
-const $editModal = $('#edit');
+"use strict";
 
-$editModal.find('.delete').click(() => {
-    closeEditModal();
-})
-$editModal.find('#cancel').click(() => {
-    closeEditModal();
-})
 
-fetch('http://localhost:8081/allPupils')
-    .then((res) => {
-        return res.json();
-    })
-    .then((pupils) => {
+var pupilTemplate = __webpack_require__(124);
+var editModal = __webpack_require__(141);
+var moment = __webpack_require__(0);
+var pupilRecordsArray = void 0;
+var activePupils = void 0;
+var $editModal = $('#edit');
+
+$editModal.find('.delete').click(function () {
+    closeEditModal();
+});
+$editModal.find('#cancel').click(function () {
+    closeEditModal();
+});
+
+fetch('http://localhost:8081/allPupils').then(function (res) {
+    return res.json();
+}).then(function (pupils) {
     pupilRecordsArray = pupilRecordsToArray(pupils);
     activePupils = filterPupils(pupilRecordsArray);
-        return activePupils;
-    })
-    .then((activePupils) => {
-        app = document.getElementsByClassName('app')[0];
-        activePupils.forEach((pupil) => { // This loop should be in the handlebars template
-        let divasync = document.createElement('div');
-                divasync.innerHTML += pupilTemplate({
-                id: pupil.key,
-                adultfname: pupil['adultfname'],
-                adultsurname: pupil['adultsurname'],
-                allergies: pupil['allergies'],
-                childfname: pupil['childfname'],
-                childsurname: pupil['childsurname'],
-                age: getPupilAge(pupil['dob']),
-                email: pupil['email'],
-                hasStarted: pupil['hasStarted'],
-                phone: pupil['phone'],
-                startDate: moment(pupil['startDate']).format('MMMM Do YYYY'),
-                status: pupil['status'],
-                dateAdded: moment(pupil['timeStamp']).format('MMMM Do YYYY')
-            });
+    return activePupils;
+}).then(function (activePupils) {
+    app = document.getElementsByClassName('app')[0];
+    activePupils.forEach(function (pupil) {
+        var divasync = document.createElement('div');
+        divasync.setAttribute('class', 'card');
+        divasync.setAttribute('id', pupil.key);
+        divasync.innerHTML += pupilTemplate({
+            id: pupil.key,
+            adultfname: pupil['adultfname'],
+            adultsurname: pupil['adultsurname'],
+            allergies: pupil['allergies'],
+            childfname: pupil['childfname'],
+            childsurname: pupil['childsurname'],
+            age: getPupilAge(pupil['dob']),
+            email: pupil['email'],
+            hasStarted: pupil['hasStarted'],
+            phone: pupil['phone'],
+            startDate: moment(pupil['startDate']).format('MMMM Do YYYY'),
+            status: pupil['status'],
+            dateAdded: moment(pupil['timeStamp']).format('MMMM Do YYYY')
+        });
 
         app.appendChild(divasync);
-        $('#' + pupil.key).find('.card-footer')
-        .click((e) => {
+        $('#' + pupil.key).find('.card-footer').click(function (e) {
             handleFooterClick(e);
         });
-        })
-    })
-
+    });
+});
+/**
+ * Use Moment.js to calculate pupil age in months
+ * @param {date} dob - Date of Birth
+ * @param {date} a - pupils date of birth
+ * @returns {date} - Age in months
+ */
 function getPupilAge(dob) {
-    let a = moment();
-    let b = moment(dob);
-    return a.diff(b, 'months')
+    var a = moment();
+    var b = moment(dob);
+    return a.diff(b, 'months');
 };
-
+/**
+ * @param  {string} id - ID for element to be edited
+ * @param  {object} pupil - The pupil being edited
+ * @returns {void}
+ */
 function openEditModal(id) {
-    let pupil = _.find(pupilRecordsArray, (p) => {
-        return p.key === id
-    })
-    let editForm = document.createElement('form');
-    editForm.innerHTML = editModal({
-                childfname: pupil['childfname'],
-    })
-   $editModal.find('.modal-card-body').append(editForm)
-    $editModal.addClass('is-active')
+    var pupil = _.find(pupilRecordsArray, function (p) {
+        return p.key === id;
+    });
+    var editForm = document.createElement('form');
+    editForm.innerHTML = editModal(pupil);
+    $editModal.find('.modal-card-body').append(editForm);
+    $editModal.addClass('is-active');
 }
+/**
+ * closes the modal after edit
+ * @returns {void}
+ */
 function closeEditModal() {
     $editModal.removeClass('is-active');
     $editModal.find('.modal-card-body').empty();
 }
-
+/**
+ * Handles a click event on the card footer
+ * @param {event} e event data
+ * @returns {void}
+ */
 function handleFooterClick(e) {
-    if($(e.target).hasClass('edit')) {
-      openEditModal($(e.target).closest('.card').attr('id'));
+    if ($(e.target).hasClass('edit')) {
+        openEditModal($(e.target).closest('.card').attr('id'));
         // console.log('Edit ' + $(e.target).closest('.card').attr('id'))
-    } else if ($(e.target).hasClass('remove')) {
-        console.log('Delete ' + $(e.target).parent().parent().parent().attr('id'))
-    }
+    } else if ($(e.target).hasClass('remove')) {}
 }
 
 /**
@@ -16402,7 +16416,7 @@ function handleFooterClick(e) {
  * @returns {undefined}
  */
 function pupilRecordsToArray(pupilRecord) {
-    const pupilRecordsArray = Object.keys(pupilRecord).map(function(key) {
+    var pupilRecordsArray = Object.keys(pupilRecord).map(function (key) {
         pupilRecord[key].key = key;
         return pupilRecord[key];
     });
@@ -16410,20 +16424,18 @@ function pupilRecordsToArray(pupilRecord) {
 }
 
 /**
- * The data return from Firebase contains ex-pupils. In most cases we do not need to
- * see them so this func returns a new collection of just those that are current
- * @param {collection} pupils
+ * The data return from Firebase contains ex-pupils. In most cases we do not
+ * need to see them so this func returns a new collection of just those
+ * that are current
+ * @param {collection} pupils - A list of pupils
  * @returns  {collection} current pupils
  */
 function filterPupils(pupils) {
-    let filtered = pupils.filter(function(p) {
+    var filtered = pupils.filter(function (p) {
         return p.status === 'Active' || p.status === 'Waiting';
-
-    })
+    });
     return filtered;
-
 }
-
 
 /***/ }),
 /* 124 */
@@ -16434,33 +16446,31 @@ function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj);
 module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"card is-6\" id=\""
-    + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + "\" >\n    <div class=\"card-header level\">\n        <div class=\"level-item has-text-centered\">\n            <div>\n                <p class=\"heading\">Child</p>\n                <p class=\"title is-size-4-mobile\"> "
+  return "<div class=\"card-header level\">\n    <div class=\"level-item has-text-centered\">\n        <div>\n            <p class=\"heading\">Child</p>\n            <p class=\"title is-size-4-mobile\"> "
     + alias4(((helper = (helper = helpers.childfname || (depth0 != null ? depth0.childfname : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"childfname","hash":{},"data":data}) : helper)))
     + " "
     + alias4(((helper = (helper = helpers.childsurname || (depth0 != null ? depth0.childsurname : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"childsurname","hash":{},"data":data}) : helper)))
-    + "</p>\n            </div>\n        </div>\n        <div class=\"level-item has-text-centered\">\n            <div>\n                <p class=\"heading\">Age</p>\n                <p class=\"title is-size-4-mobile\">"
+    + "</p>\n        </div>\n    </div>\n    <div class=\"level-item has-text-centered\">\n        <div>\n            <p class=\"heading\">Age</p>\n            <p class=\"title is-size-4-mobile\">"
     + alias4(((helper = (helper = helpers.age || (depth0 != null ? depth0.age : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"age","hash":{},"data":data}) : helper)))
-    + " Months </p>\n            </div>\n        </div>\n    </div>\n        <div class=\"card-content\">\n            <div class=\"media\">\n                <div class=\"media-left\">\n                </div>\n                <div class=\"media-content\">\n                    <p class=\"title is-4\">"
+    + " Months </p>\n        </div>\n    </div>\n</div>\n<div class=\"card-content\">\n        <div class=\"media-content\">\n            <p class=\"title is-4\">"
     + alias4(((helper = (helper = helpers.adultfname || (depth0 != null ? depth0.adultfname : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"adultfname","hash":{},"data":data}) : helper)))
     + " "
     + alias4(((helper = (helper = helpers.adultsurname || (depth0 != null ? depth0.adultsurname : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"adultsurname","hash":{},"data":data}) : helper)))
-    + "</p>\n                    <p class=\"subtitle is-6\">\n                        <p>\n                            <a href=\"mailto:"
+    + "</p>\n            <p class=\"subtitle is-6\">\n                <p>\n                    <a href=\"mailto:"
     + alias4(((helper = (helper = helpers.email || (depth0 != null ? depth0.email : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"email","hash":{},"data":data}) : helper)))
     + "\">"
     + alias4(((helper = (helper = helpers.email || (depth0 != null ? depth0.email : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"email","hash":{},"data":data}) : helper)))
-    + "</a>\n                        </p>\n                        <p>\n                            <a href=\"tel:"
+    + "</a>\n                </p>\n                <p>\n                    <a href=\"tel:"
     + alias4(((helper = (helper = helpers.phone || (depth0 != null ? depth0.phone : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"phone","hash":{},"data":data}) : helper)))
     + "\">"
     + alias4(((helper = (helper = helpers.phone || (depth0 != null ? depth0.phone : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"phone","hash":{},"data":data}) : helper)))
-    + "</a>\n                        </p>\n                    </p>\n                </div>\n            </div>\n            <div class=\"content level\">\n                <div class=\"level-item has-text-centered\">\n                    <div>\n                        <p class=\"heading\">Start Date</p>\n                        <p> "
+    + "</a>\n                </p>\n            </p>\n        </div>\n    <div class=\"content level\">\n        <div class=\"level-item has-text-centered\">\n            <div>\n                <p class=\"heading\">Start Date</p>\n                <p> "
     + alias4(((helper = (helper = helpers.startDate || (depth0 != null ? depth0.startDate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"startDate","hash":{},"data":data}) : helper)))
-    + " </p>\n                    </div>\n                </div>\n                <div class=\"level-item has-text-centered\">\n                    <div>\n                        <p class=\"heading\">Date Added</p>\n                        <p> "
+    + " </p>\n            </div>\n        </div>\n        <div class=\"level-item has-text-centered\">\n            <div>\n                <p class=\"heading\">Date Added</p>\n                <p> "
     + alias4(((helper = (helper = helpers.dateAdded || (depth0 != null ? depth0.dateAdded : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"dateAdded","hash":{},"data":data}) : helper)))
-    + "</p>\n                    </div>\n                </div>\n                <div class=\"level-item has-text-centered\">\n                    <div>\n                        <p class=\"heading\">Status</p>\n                        <p>"
+    + "</p>\n            </div>\n        </div>\n        <div class=\"level-item has-text-centered\">\n            <div>\n                <p class=\"heading\">Status</p>\n                <p>"
     + alias4(((helper = (helper = helpers.status || (depth0 != null ? depth0.status : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"status","hash":{},"data":data}) : helper)))
-    + "</p>\n                    </div>\n                </div>\n            </div>\n            <footer class=\"card-footer\">\n                <a class=\"button edit is-primary card-footer-item\" >Edit</a>\n                <a class=\"button remove is-danger card-footer-item\" >Delete</a>\n            </footer>\n        </div>\n";
+    + "</p>\n            </div>\n        </div>\n    </div>\n    <footer class=\"card-footer\">\n        <a class=\"button edit is-primary card-footer-item\">Edit</a>\n        <a class=\"button remove is-danger card-footer-item\">Delete</a>\n    </footer>\n</div>\n";
 },"useData":true});
 
 /***/ }),
@@ -17407,11 +17417,15 @@ module.exports = g;
 var Handlebars = __webpack_require__(3);
 function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
 module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var helper;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"field\">\n  <label class=\"label\">Name</label>\n  <div class=\"control\">\n    <input class=\"input\" type=\"text\" value=\""
-    + container.escapeExpression(((helper = (helper = helpers.childfname || (depth0 != null ? depth0.childfname : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"childfname","hash":{},"data":data}) : helper)))
-    + "\" placeholder=\"e.g Alex Smith\">\n  </div>\n</div>\n\n<div class=\"field\">\n  <label class=\"label\">Email</label>\n  <div class=\"control\">\n    <input class=\"input\" type=\"email\" placeholder=\"e.g. alexsmith@gmail.com\">\n  </div>\n</div>\n";
+  return "<div class=\"field\">\n  <label class=\"label\">Childs First Name</label>\n  <div class=\"control\">\n    <input class=\"input\" type=\"text\" value=\""
+    + alias4(((helper = (helper = helpers.childfname || (depth0 != null ? depth0.childfname : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"childfname","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"e.g Alex Smith\">\n  </div>\n</div>\n\n<div class=\"field\">\n  <label class=\"label\">Childs Surname Name</label>\n  <div class=\"control\">\n    <input class=\"input\" type=\"text\" value=\""
+    + alias4(((helper = (helper = helpers.childsurname || (depth0 != null ? depth0.childsurname : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"childsurname","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"e.g Alex Smith\">\n  </div>\n</div>\n\n<div class=\"field\">\n  <label class=\"label\">Email</label>\n  <div class=\"control\">\n    <input class=\"input\" type=\"email\" value=\""
+    + alias4(((helper = (helper = helpers.email || (depth0 != null ? depth0.email : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"email","hash":{},"data":data}) : helper)))
+    + "\" placeholder=\"e.g. alexsmith@gmail.com\">\n  </div>\n</div>\n";
 },"useData":true});
 
 /***/ }),

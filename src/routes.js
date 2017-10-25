@@ -7,6 +7,11 @@ const admin = require('./firebase-admin');
 const db = admin.database();
 const ref = db.ref('/pupils/');
 
+ref.on('child_changed', function(snapshot) {
+  const changedPupil = snapshot.val();
+  console.log('The updated person is ', snapshot.key);
+});
+
 router.use((req, res, next) => {
     next();
 });
