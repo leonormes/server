@@ -29,9 +29,10 @@ wss.on('connection', function connection(ws, req) {
   });
 
 ref.on('child_changed', function(snapshot) {
-  const changedPupil = snapshot.val();
+    const changedPupil = snapshot.val();
+    changedPupil.key = snapshot.key;
     console.log('The updated person is ', changedPupil);
-    ws.send(JSON.stringify(snapshot.val()));
+    ws.send(JSON.stringify(changedPupil));
 });
   ws.send('Hello client!');
 });
