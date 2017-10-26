@@ -19,7 +19,6 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({server});
 
 wss.on('connection', function connection(ws, req) {
-  const location = url.parse(req.url, true);
   // You might use location.query.access_token to authenticate or share sessions
   // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
 
@@ -31,8 +30,8 @@ wss.on('connection', function connection(ws, req) {
 
 ref.on('child_changed', function(snapshot) {
   const changedPupil = snapshot.val();
-	console.log('The updated person is ', snapshot.val());
-	ws.send(JSON.stringify(snapshot.val()));
+    console.log('The updated person is ', changedPupil);
+    ws.send(JSON.stringify(snapshot.val()));
 });
   ws.send('Hello client!');
 });
@@ -42,7 +41,7 @@ const router = require('./routes');
 app.use('/', router);
 app.listen(port, host);
 
-server.listen(8080, function listening() {
+server.listen(3322, function listening() {
   console.log('Listening on %d', server.address().port);
 });
 
