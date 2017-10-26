@@ -57,7 +57,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/public/";
+/******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 123);
@@ -16311,100 +16311,88 @@ return zhTw;
 /* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+const pupilTemplate = __webpack_require__(124);
+const editModal = __webpack_require__(141);
+const moment = __webpack_require__(0);
+let pupilRecordsArray;
+let activePupils;
+const $editModal = $('#edit');
 
-
-var pupilTemplate = __webpack_require__(124);
-var editModal = __webpack_require__(141);
-var moment = __webpack_require__(0);
-var pupilRecordsArray = void 0;
-var activePupils = void 0;
-var $editModal = $('#edit');
-
-$editModal.find('.delete').click(function () {
+$editModal.find('.delete').click(() => {
     closeEditModal();
 });
-$editModal.find('#cancel').click(function () {
+$editModal.find('#cancel').click(() => {
     closeEditModal();
 });
 
-fetch('http://localhost:8081/allPupils').then(function (res) {
-    return res.json();
-}).then(function (pupils) {
+fetch('http://localhost:8081/allPupils')
+    .then((res) => {
+        return res.json();
+    })
+    .then((pupils) => {
     pupilRecordsArray = pupilRecordsToArray(pupils);
     activePupils = filterPupils(pupilRecordsArray);
-    return activePupils;
-}).then(function (activePupils) {
-    app = document.getElementsByClassName('app')[0];
-    activePupils.forEach(function (pupil) {
-        var divasync = document.createElement('div');
-        divasync.setAttribute('class', 'card');
-        divasync.setAttribute('id', pupil.key);
-        divasync.innerHTML += pupilTemplate({
-            id: pupil.key,
-            adultfname: pupil['adultfname'],
-            adultsurname: pupil['adultsurname'],
-            allergies: pupil['allergies'],
-            childfname: pupil['childfname'],
-            childsurname: pupil['childsurname'],
-            age: getPupilAge(pupil['dob']),
-            email: pupil['email'],
-            hasStarted: pupil['hasStarted'],
-            phone: pupil['phone'],
-            startDate: moment(pupil['startDate']).format('MMMM Do YYYY'),
-            status: pupil['status'],
-            dateAdded: moment(pupil['timeStamp']).format('MMMM Do YYYY')
-        });
+        return activePupils;
+    })
+    .then((activePupils) => {
+        app = document.getElementsByClassName('app')[0];
+        activePupils.forEach((pupil) => { // This loop should be in the handlebars template
+		const divasync = document.createElement('div');
+		divasync.setAttribute('class', 'card');
+		divasync.setAttribute('id', pupil.key);
+                divasync.innerHTML += pupilTemplate({
+                id: pupil.key,
+                adultfname: pupil['adultfname'],
+                adultsurname: pupil['adultsurname'],
+                allergies: pupil['allergies'],
+                childfname: pupil['childfname'],
+                childsurname: pupil['childsurname'],
+                age: getPupilAge(pupil['dob']),
+                email: pupil['email'],
+                hasStarted: pupil['hasStarted'],
+                phone: pupil['phone'],
+                startDate: moment(pupil['startDate']).format('MMMM Do YYYY'),
+                status: pupil['status'],
+                dateAdded: moment(pupil['timeStamp']).format('MMMM Do YYYY'),
+            });
 
         app.appendChild(divasync);
-        $('#' + pupil.key).find('.card-footer').click(function (e) {
+        $('#' + pupil.key).find('.card-footer')
+        .click((e) => {
             handleFooterClick(e);
         });
+        });
     });
-});
-/**
- * Use Moment.js to calculate pupil age in months
- * @param {date} dob - Date of Birth
- * @param {date} a - pupils date of birth
- * @returns {date} - Age in months
- */
+
 function getPupilAge(dob) {
-    var a = moment();
-    var b = moment(dob);
+    const a = moment();
+    const b = moment(dob);
     return a.diff(b, 'months');
 };
-/**
- * @param  {string} id - ID for element to be edited
- * @param  {object} pupil - The pupil being edited
- * @returns {void}
- */
+
 function openEditModal(id) {
-    var pupil = _.find(pupilRecordsArray, function (p) {
+    const pupil = _.find(pupilRecordsArray, (p) => {
         return p.key === id;
     });
-    var editForm = document.createElement('form');
-    editForm.innerHTML = editModal(pupil);
-    $editModal.find('.modal-card-body').append(editForm);
+    const editForm = document.createElement('form');
+    editForm.innerHTML = editModal(
+		pupil
+    );
+   $editModal.find('.modal-card-body').append(editForm);
     $editModal.addClass('is-active');
 }
-/**
- * closes the modal after edit
- * @returns {void}
- */
 function closeEditModal() {
     $editModal.removeClass('is-active');
     $editModal.find('.modal-card-body').empty();
 }
-/**
- * Handles a click event on the card footer
- * @param {event} e event data
- * @returns {void}
- */
+
 function handleFooterClick(e) {
     if ($(e.target).hasClass('edit')) {
-        openEditModal($(e.target).closest('.card').attr('id'));
+      openEditModal($(e.target).closest('.card').attr('id'));
         // console.log('Edit ' + $(e.target).closest('.card').attr('id'))
-    } else if ($(e.target).hasClass('remove')) {}
+    } else if ($(e.target).hasClass('remove')) {
+        console.log('Delete ' + $(e.target).parent().parent().parent().attr('id'));
+    }
 }
 
 /**
@@ -16416,7 +16404,7 @@ function handleFooterClick(e) {
  * @returns {undefined}
  */
 function pupilRecordsToArray(pupilRecord) {
-    var pupilRecordsArray = Object.keys(pupilRecord).map(function (key) {
+    const pupilRecordsArray = Object.keys(pupilRecord).map(function(key) {
         pupilRecord[key].key = key;
         return pupilRecord[key];
     });
@@ -16424,18 +16412,18 @@ function pupilRecordsToArray(pupilRecord) {
 }
 
 /**
- * The data return from Firebase contains ex-pupils. In most cases we do not
- * need to see them so this func returns a new collection of just those
- * that are current
- * @param {collection} pupils - A list of pupils
+ * The data return from Firebase contains ex-pupils. In most cases we do not need to
+ * see them so this func returns a new collection of just those that are current
+ * @param {collection} pupils
  * @returns  {collection} current pupils
  */
 function filterPupils(pupils) {
-    var filtered = pupils.filter(function (p) {
+    const filtered = pupils.filter(function(p) {
         return p.status === 'Active' || p.status === 'Waiting';
     });
     return filtered;
 }
+
 
 /***/ }),
 /* 124 */

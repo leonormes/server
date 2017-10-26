@@ -1,16 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
+const ref = require('./fb-connect');
 
-const admin = require('./firebase-admin');
 
-const db = admin.database();
-const ref = db.ref('/pupils/');
 
-ref.on('child_changed', function(snapshot) {
-  const changedPupil = snapshot.val();
-  console.log('The updated person is ', snapshot.key);
-});
 
 router.use((req, res, next) => {
     next();
